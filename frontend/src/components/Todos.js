@@ -33,7 +33,15 @@ function Todos(props) {
         setDescription('')
     }
 
-    
+    const deleteTodo = async (id) => {
+        const response = await fetch(`${API}/todos/${id}`,{
+            method: 'DELETE'
+        })
+        
+        const data = await response.json()
+        console.log(data)
+        await get_todos()
+    }
 
     return (
         <div className="row">
@@ -57,7 +65,7 @@ function Todos(props) {
 
                                 <td>
                                     <button type="button" className="btn btn-success">Editar</button>
-                                    <button type="button" className="btn btn-danger">Eliminar</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => deleteTodo(todo.id)}>Eliminar</button>
                                 </td>
                             </tr>
                         ))}
