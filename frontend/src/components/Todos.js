@@ -34,13 +34,16 @@ function Todos(props) {
     }
 
     const deleteTodo = async (id) => {
-        const response = await fetch(`${API}/todos/${id}`,{
+        const userResponse = window.confirm("Are you sure you want to delete it?")
+        if (userResponse) {
+            const response = await fetch(`${API}/todos/${id}`,{
             method: 'DELETE'
-        })
-        
-        const data = await response.json()
-        console.log(data)
-        await get_todos()
+            })
+            
+            const data = await response.json()
+            console.log(data)
+            await get_todos()
+        }
     }
 
     return (
