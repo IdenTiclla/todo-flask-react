@@ -30,7 +30,12 @@ def create_todo():
 def update_todo(id):
     todo = Todo.query.get(id)
     if todo:
-        todo.description = request.json["description"]
+        if "description" in request.json:
+            todo.description = request.json["description"]
+
+        if "completed" in request.json:
+            todo.completed = request.json["completed"]
+        
         todo.update()
         return jsonify(todo.format())
     else:

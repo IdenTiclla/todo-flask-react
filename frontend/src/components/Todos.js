@@ -46,6 +46,22 @@ function Todos(props) {
         }
     }
 
+    const checkUncked = async(todo) => {
+        const response = await fetch(`${API}/todos/${todo.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                completed: !todo.completed
+            })
+        })
+        const data = await response.json()
+        console.log(data)
+
+        await get_todos()
+    }
+
     return (
         <div className="row">
             <h1>Todo App</h1>
@@ -64,7 +80,11 @@ function Todos(props) {
                             <tr key={todo.id}>
                                 <td>{todo.id}</td>
                                 <td>{todo.description}</td>
-                                <td>{todo.completed}</td>
+                                <td>
+                                    <div className="form-check form-switch">
+                                        <input className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked={todo.completed} onChange={() => checkUncked(todo)}/>
+                                    </div>
+                                </td>
 
                                 <td>
                                     <button type="button" className="btn btn-success">Editar</button>
