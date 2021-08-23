@@ -5,6 +5,9 @@ function Todos(props) {
     const [todos, setTodos] = useState([])
     const [description, setDescription] = useState('')
 
+    const [editing, setEditing] = useState(false)
+    const [id, setId] = useState('')
+
     const get_todos = async() => {
         const response = await fetch(`${API}/todos`)
         const data = await response.json()
@@ -17,17 +20,34 @@ function Todos(props) {
 
     const onSubmitForm = async (e) => {
         e.preventDefault()
-        const response = await fetch(`${API}/todos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                description: description
+        if (!editing) {
+            const response = await fetch(`${API}/todos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: description
+                })
             })
-        })
-        const data = await response.json()
-        console.log(data)
+            const data = await response.json()
+            console.log(data)
+        }
+        else {
+            const response = await fetch(`${API}/todos/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: description
+                })
+            })
+            const data = await response.json()
+            console.log(data)
+            setEditing(false)
+            setId('')
+        }
 
         await get_todos()
         setDescription('')
@@ -62,6 +82,17 @@ function Todos(props) {
         await get_todos()
     }
 
+    const editTodo = async(id) => {
+        const response = await fetch(`${API}/todos/${id}`)
+        const data = await response.json()
+        console.log(data)
+
+        
+        setDescription(data.description)
+        setEditing(true)
+        setId(id)
+    }
+
     return (
         <div className="row">
             <h1>Todo App</h1>
@@ -91,7 +122,9 @@ function Todos(props) {
                                 </td>
 
                                 <td>
-                                    <button type="button" className="btn btn-success">Editar</button>
+                                    <button type="button" className="btn btn-success" onClick={() => editTodo(todo.id)}>
+                                        Editar
+                                    </button>
                                     <button type="button" className="btn btn-danger" onClick={() => deleteTodo(todo.id)}>Eliminar</button>
                                 </td>
                             </tr>
@@ -103,7 +136,10 @@ function Todos(props) {
                 <h1>Add Todo</h1>
                 <form onSubmit={onSubmitForm}>
                     <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}/>
-                    <input  type="submit" value="Create"/>
+                    <input 
+                        type="submit" 
+                        value={ editing ? 'Update': 'Create'}
+                    />
                 </form>
             </div>
         </div>
