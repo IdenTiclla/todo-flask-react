@@ -79,7 +79,11 @@ function Todos(props) {
                         {todos.map(todo => (
                             <tr key={todo.id}>
                                 <td>{todo.id}</td>
-                                <td>{todo.description}</td>
+                                <td style={{
+                                    textDecoration: todo.completed ? 'line-through': 'none'
+                                }}>
+                                    {todo.description}
+                                </td>
                                 <td>
                                     <div className="form-check form-switch">
                                         <input className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked={todo.completed} onChange={() => checkUncked(todo)}/>
